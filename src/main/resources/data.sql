@@ -1,3 +1,5 @@
+USE infracciones_db;
+
 INSERT IGNORE INTO tipos_infraccion (codigo, descripcion, monto_base) VALUES
 ('TI-001', 'Exceso de velocidad', 500.00),
 ('TI-002', 'Conducir en estado de ebriedad', 1500.00),
