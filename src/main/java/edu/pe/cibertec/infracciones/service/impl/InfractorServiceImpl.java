@@ -8,6 +8,9 @@ import edu.pe.cibertec.infracciones.model.Infractor;
 import edu.pe.cibertec.infracciones.model.Vehiculo;
 import edu.pe.cibertec.infracciones.repository.InfractorRepository;
 import edu.pe.cibertec.infracciones.repository.VehiculoRepository;
+import edu.pe.cibertec.infracciones.repository.MultaRepository; //inyectando el repository MultaRepository
+import edu.pe.cibertec.infracciones.model.Multa; //inyectando el model Multa
+import edu.pe.cibertec.infracciones.model.EstadoMulta; //inyectando el model EstadoMulta
 import edu.pe.cibertec.infracciones.service.IInfractorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ public class InfractorServiceImpl implements IInfractorService {
 
     private final InfractorRepository infractorRepository;
     private final VehiculoRepository vehiculoRepository;
+    private final MultaRepository multaRepository; //agrego el repository
 
     @Override
     public InfractorResponseDTO registrarInfractor(InfractorRequestDTO dto) {
@@ -56,6 +60,21 @@ public class InfractorServiceImpl implements IInfractorService {
         infractorRepository.save(infractor);
     }
 
+    //metodo calcularDeuda de multas con su 15% :D
+    @Override
+    public Double calcularDeuda(Long idInfractor) {
+        List<Multa> multas = multaRepository.findByInfractor_Id(idInfractor);
+        Double deudaTotal = 0.0;
+
+        for (Multa multa: multas) {
+            if (multa.getEstado() == EstadoMulta.PENDIENTE) {
+                deudaTotal += multa.getMonto();
+            } else if (multa.getEstado() == EstadoMulta.VENCIDA) {
+                deudaTotal += (multa.getMonto() * 1.15); //aqui esta el 15% :D
+            }
+        }
+        return deudaTotal; //retornamos 🗣️🔥
+    }
 
     private InfractorResponseDTO mapToResponse(Infractor infractor) {
         InfractorResponseDTO dto = new InfractorResponseDTO();
