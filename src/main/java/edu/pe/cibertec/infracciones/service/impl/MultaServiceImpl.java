@@ -95,6 +95,38 @@ public class MultaServiceImpl implements IMultaService {
                 .toList();
     }
 
+    //P3
+    @Override
+    public void transferirMulta(Long idMulta, Long idNuevoInfractor){
+        Multa multa = multaRepository.findById(idMulta)
+                .orElseThrow(() -> new MultaNotFoundException(idMulta));
+
+        Infractor nuevoInfractor = infractorRepository.findById(idNuevoInfractor)
+                .orElseThrow(() -> new InfractorNotFoundException(idNuevoInfractor));
+
+        // el nuevo infractor no puede estar bloqueado por eso el "exception" :D
+        if (nuevoInfractor.isBloqueado()) {
+            throw new InfractorBloqueadoException(idNuevoInfractor);
+        }
+
+        // la multa debe estar en PENDIENTE :D
+        if (multa.getEstado() != EstadoMulta.PENDIENTE) {
+            throw new RuntimeException("No se puede transferir: la multa no esta PENDIENTE");
+        }
+
+        // el vehiculo de la multa le debe pertenecer al nuevo infractor :D
+        boolean lePertenece = nuevoInfractor.getVehiculos().stream()
+                .anyMatch(vehiculo -> vehiculo.getId().equals(multa.getVehiculo().getId()));
+
+        if (!lePertenece) {
+            throw new RuntimeException("No se puede transferir: el vehiculo no pertenece al infractor destino");
+        }
+
+        // validamos y guardamos :D
+        multa.setInfractor(nuevoInfractor);
+        multaRepository.save(multa);
+    }
+
     private MultaResponseDTO mapToResponse(Multa multa) {
         MultaResponseDTO dto = new MultaResponseDTO();
         dto.setId(multa.getId());

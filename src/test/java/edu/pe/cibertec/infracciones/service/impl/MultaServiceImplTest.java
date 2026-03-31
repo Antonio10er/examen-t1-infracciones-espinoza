@@ -31,6 +31,7 @@ public class MultaServiceImplTest {
     @InjectMocks
     private MultaServiceImpl multaService;
 
+    //P3
     @Test
     void transferirMulta_DebeAsignarMultaAlNuevoInfractor() {
         Long idMulta = 1L;
