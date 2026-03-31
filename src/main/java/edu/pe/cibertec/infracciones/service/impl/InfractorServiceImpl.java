@@ -94,7 +94,6 @@ public class InfractorServiceImpl implements IInfractorService {
         infractor.getVehiculos().removeIf(v -> v.getId().equals(vehiculoId));
 
         infractorRepository.save(infractor);
-
     }
 
     private InfractorResponseDTO mapToResponse(Infractor infractor) {
