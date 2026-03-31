@@ -1,0 +1,25 @@
+name: Ejecutar Pruebas TDD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Ejecutar Pruebas con Maven
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. Descargar el codigo del repositorio
+        uses: actions/checkout@v4
+
+      - name: 2. Configurar Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: 3. Ejecutar los tests
+        run: mvn test
