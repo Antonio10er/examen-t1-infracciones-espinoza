@@ -12,4 +12,7 @@ public interface IInfractorService {
 
     //agregando metodo
     Double calcularDeuda(Long idInfractor);
+
+    //P2:agregando metodo
+    void desasignarVehiculo(Long infractorId, Long vehiculoId);
 }
